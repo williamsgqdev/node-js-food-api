@@ -184,24 +184,25 @@ export const GetFoods = async (req: Request, res: Response) => {
 }
 
 
-export const GetCurrentOrders = async (req: Request, res: Response) => {
+export const GetOrderDetails = async (req: Request, res: Response) => {
     const orderId = req.params.id;
+
 
     if (orderId) {
         const order = await Order.findById(orderId).populate('items.food');
-        if (!order) {
+        if (order) {
             return res.status(200).json(order);
         }
     }
     return res.status(404).json({ message: "No Order found" });
 }
-export const GetOrderDetails = async (req: Request, res: Response) => {
+export const GetCurrentOrders = async (req: Request, res: Response) => {
     const user = req.user;
 
     if (user) {
         const orders = await Order.find({ venndorId: req.user._id }).populate('items.food');
 
-        if (!orders) {
+        if (orders) {
             return res.status(200).json(orders);
         }
     }
@@ -210,4 +211,26 @@ export const GetOrderDetails = async (req: Request, res: Response) => {
 
 export const ProcessOrder = async (req: Request, res: Response) => {
 
+    const orderId = req.params.id;
+
+    const { status, remarks, time } = req.body;
+
+    if (orderId) {
+        const order = await Order.findById(orderId).populate('items.food');
+
+        order.orderStatus = status;
+        order.remarks = remarks;
+        if (time) {
+            order.readyTime = time;
+        }
+
+        const orderResult = await order.save();
+
+        if (orderResult) {
+            return res.status(200).json(orderResult);
+        }
+    }
+    return res.status(404).json({ message: "Unable to Process order " });
 }
+
+

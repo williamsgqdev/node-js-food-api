@@ -322,9 +322,17 @@ export const CreateOrder = async (req: Request, res: Response) => {
         let cartItems = Array();
 
         let netAmount = 0;
+        let vendorId;
 
         //Calculate net amount
         const foods = await Food.find().where('_id').in(cart.map(item => item._id)).exec();
+
+        console.log(foods);
+
+        if (foods.length === 0) {
+            return res.status(400).json({ message: 'Not Found' });
+        }
+
 
 
 
@@ -333,6 +341,7 @@ export const CreateOrder = async (req: Request, res: Response) => {
 
 
                 if (food._id == _id) {
+                    vendorId = food.vendorId;
                     netAmount += (food.price * unit);
                     cartItems.push({ food, unit });
                 }
@@ -345,15 +354,20 @@ export const CreateOrder = async (req: Request, res: Response) => {
         if (cartItems) {
             const order = await Order.create({
                 orderId,
+                vendorId,
                 items: cartItems,
                 totalAmount: netAmount,
                 OrderDate: new Date(),
                 paidThrough: 'COD',
                 paymentResponse: '',
                 orderStatus: 'PENDING',
+                appliedOffers: false,
+                offerId: null,
+                readyTime: 45
             })
 
             if (order) {
+                profile.cart = [] as any;
                 profile.orders.push(order);
                 await profile.save();
 

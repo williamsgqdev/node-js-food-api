@@ -12,9 +12,9 @@ export interface OrderDoc extends Document {
     orderStatus: string,
     remarks: string,
     deliveryId: string,
-    appliedOffers : boolean,
-    offerId : string,
-    readyTime : number,
+    appliedOffers: boolean,
+    offerId: string,
+    readyTime: number,
 }
 
 
@@ -25,7 +25,7 @@ const orderSchema = new Schema({
     },
     vendorId: {
         type: String,
-        required: true,
+     
     },
     items: [{
         food: {
@@ -51,7 +51,25 @@ const orderSchema = new Schema({
     },
     orderStatus: {
         type: String
-    }
+    },
+    remarks: {
+        type: String,
+
+    },
+    deliveryId: {
+        type: String,
+
+    },
+    appliedOffers: {
+        type: Boolean,
+
+    },
+    offerId: {
+        type: String
+    },
+    readyTime: {
+        type: Number
+    },
 
 }, {
     toJSON: {

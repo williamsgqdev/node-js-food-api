@@ -34,9 +34,13 @@ router.get('/foods', GetFoods)
 router.patch('/coverImages' ,images , UpdateVendorCoverImage )
 
 router.get('/orders' , GetCurrentOrders);
-router.get('/orders/:id/process' , ProcessOrder);
+router.patch('/orders/:id/process' , ProcessOrder);
 router.get('/orders/:id' , GetOrderDetails);
+ 
 
+router.get('/offers')
+router.post('/offers')
+router.patch('/offers/:id')
 
 
 export { router as VendorRoutes }
